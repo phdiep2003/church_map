@@ -3,30 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>People Locations - OpenStreetMap</title>
+    <title>Qatar's Church Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
-        #map { height: 800px; width: 100%; }
+        #map { height: 700px; width: 100%; }
         #showPopupsButton { margin: 20px; }
 
         /* Custom styles for popups */
         .leaflet-popup-content-wrapper {
-            background-color: rgba(187, 186, 186, 0.7); /* Transparent gray */
-            border-radius: 8px; /* Rounded corners */
+            background-color: rgba(128, 128, 128, 0.7); /* Transparent gray */
+            border-radius: 0; /* No rounded corners for a rectangular shape */
+            padding: 10px; /* Add some padding inside the popup */
         }
 
         .leaflet-popup-tip {
-            background-color: rgba(187, 186, 186, 0.7); /* Same transparent gray for the arrow */
+            background-color: rgba(128, 128, 128, 0.7);
+            border-radius: 0; 
         }
 
         .leaflet-popup-content {
-            color: rgb(33, 32, 32); /* Change text color to white for better contrast */
+            color: white; /* White text for contrast */
+            margin: 0; /* No margin for rectangular shape */
+            text-align: left; /* Align text to the left */
         }
+
     </style>
 </head>
 <body>
-    <!-- <h3>People Locations on OpenStreetMap</h3> -->
     <button id="showPopupsButton">Show All Popups</button>
     <div id="map"></div>
 
@@ -34,38 +38,81 @@
         // Initialize the map
         const map = L.map('map').setView([25.2854, 51.5310], 10); // Centered in Doha, Qatar
 
-        // Use Stadia Maps for an English-based map
+        // Use CartoDB tile layer (English)
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
             maxZoom: 20
         }).addTo(map);
 
-
-
-        // List of people and their coordinates (approximated)
+        // List of people and their coordinates
         const locations = [
-            { name: "Zaghum Siddique", coords: [25.682, 51.508] },
-            { name: "Albert Dacula", coords: [25.670, 51.500] },
-            { name: "Alan Gonzaga", coords: [25.800, 51.200] },
-            { name: "Guishuang Wang", coords: [25.280, 51.420] },
-            { name: "Henry Diep", coords: [25.300, 51.430] },
-            { name: "Marc Santos", coords: [25.250, 51.520] },
-            { name: "Lito Luna", coords: [25.240, 51.530] },
-            { name: "Lorenzo Alberto", coords: [25.230, 51.540] },
-            { name: "Jannyx Kitan", coords: [25.225, 51.545] },
-            { name: "John Kitan", coords: [25.225, 51.545] },
-            { name: "Eric Naulayad", coords: [25.210, 51.560] },
-            { name: "Gabriel Villanueva", coords: [25.190, 51.580] },
-            { name: "Grandiel Villanueva", coords: [25.190, 51.580] }
+            { name: "Zaghum Siddique", coords: [25.717438, 51.526562] },
+            { name: "Samina Siddique", coords: [25.717438, 51.526562] },
+            { name: "Albert Dacula", coords: [25.679437, 51.492687] },
+            { name: "Alan Gonzaga", coords: [25.460687, 51.329687] },
+            { name: "Lowelyn Gonzaga", coords: [25.460687, 51.329687] },
+            { name: "Welnor Zamora", coords: [25.460687, 51.329687] },
+            { name: "Jocelyn Labajo", coords: [25.460687, 51.329687] },
+            { name: "Guishuang Wang", coords: [25.332687, 51.417437] },
+            { name: "Henry Diep", coords: [25.310938, 51.446438] },
+            { name: "Marc Santos", coords: [25.279812, 51.550313] },
+            { name: "Eica Santos", coords: [25.279812, 51.550313] },
+            { name: "Rosario Olalia", coords: [25.279812, 51.550313] },
+            { name: "Lito Luna", coords: [25.269687, 51.536313] },
+            { name: "Joan Luna", coords: [25.269687, 51.536313] },
+            { name: "Lorenzo Alberto", coords: [25.289813, 51.497687] },
+            { name: "Sarah Alberto", coords: [25.289813, 51.497687] },
+            { name: "John Kitan", coords: [25.286313, 51.499813] },
+            { name: "Memsys Kitan", coords: [25.286313, 51.499813] },
+            { name: "Jannyx Kitan", coords: [25.286313, 51.499813] },
+            { name: "Eric Naulayad", coords: [25.218187, 51.441562] },
+            { name: "Gabriel Villanueva", coords: [25.198062, 51.505562] },
+            { name: "Grandiel Villanueva", coords: [25.198062, 51.505562] },
+            { name: "Edith Villanueva", coords: [25.198062, 51.505562] },
+            { name: "Gia Villanueva", coords: [25.198062, 51.505562] },
+            { name: "Marga Mendoza", coords: [25.300063, 51.499562] }
         ];
+
+        // Group people by coordinates
+        const groupedLocations = {};
+
+        locations.forEach(person => {
+            const key = person.coords.join(","); // Create a unique key for the coordinate
+            if (!groupedLocations[key]) {
+                groupedLocations[key] = { coords: person.coords, names: [] };
+            }
+            groupedLocations[key].names.push(person.name);
+        });
 
         // Array to store markers
         const markers = [];
 
-        // Add markers with popups for each location
-        locations.forEach(person => {
-            const marker = L.marker(person.coords).addTo(map)
-                .bindPopup(`<b>${person.name}</b>`, { autoClose: false }); // Prevent auto close
+        // Create markers for grouped locations
+        Object.values(groupedLocations).forEach(group => {
+            const popupContent = `${group.names.join("<br>")}`;
+            const isLargeGroup = group.names.length === 3; // Check if 3 people
+            const containsMargaMendoza = group.names.includes("Marga Mendoza");
+
+            // Create the marker
+            const marker = L.marker(group.coords).addTo(map);
+            
+            // Set default offset
+            let offset = L.point(0, 0);
+
+            // Adjust the offset based on the conditions
+            if (isLargeGroup) {
+                offset = offset.add(L.point(35, 25)); // Shift right and down for large groups
+            }
+            if (containsMargaMendoza) {
+                offset = offset.add(L.point(0, -25)); // Shift up for groups containing Marga Mendoza
+            }
+
+            // Bind popup with calculated offset
+            marker.bindPopup(popupContent, {
+                autoClose: false,
+                offset: offset
+            });
+
             markers.push(marker);
         });
 
