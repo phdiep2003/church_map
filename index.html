@@ -49,6 +49,9 @@
             { name: "Zaghum Siddique", coords: [25.717438, 51.526562] },
             { name: "Samina Siddique", coords: [25.717438, 51.526562] },
             { name: "Albert Dacula", coords: [25.679437, 51.492687] },
+            { name: "Ann Muego", coords: [25.240031792875516, 51.541719362177844] },
+            { name: "Joanna Francisco", coords: [25.299411770289545, 51.50604928285764] },
+            { name: "Mish Jane Borja", coords: [25.299411770289545, 51.50604928285764] },
             { name: "Alan Gonzaga", coords: [25.460687, 51.329687] },
             { name: "Lowelyn Gonzaga", coords: [25.460687, 51.329687] },
             { name: "Welnor Zamora", coords: [25.460687, 51.329687] },
@@ -63,13 +66,21 @@
             { name: "Lorenzo Alberto", coords: [25.289813, 51.497687] },
             { name: "Sarah Alberto", coords: [25.289813, 51.497687] },
             { name: "John Kitan", coords: [25.286313, 51.499813] },
-            { name: "Memsys Kitan", coords: [25.286313, 51.499813] },
+            { name: "Memsy Kitan", coords: [25.286313, 51.499813] },
             { name: "Jannyx Kitan", coords: [25.286313, 51.499813] },
+            { name: "Juree Kitan", coords: [25.286313, 51.499813] },
             { name: "Eric Naulayad", coords: [25.218187, 51.441562] },
             { name: "Gabriel Villanueva", coords: [25.198062, 51.505562] },
             { name: "Grandiel Villanueva", coords: [25.198062, 51.505562] },
             { name: "Edith Villanueva", coords: [25.198062, 51.505562] },
             { name: "Gia Villanueva", coords: [25.198062, 51.505562] },
+            { name: "Ruturaj Mohite", coords: [25.160501252504908, 51.519074990885386] },
+            { name: "Jeoffrey", coords: [24.99926618466198, 51.55386370948577] },
+            { name: "Charlon Mariano", coords: [25.25771116915237, 51.42714889325436] },
+            { name: "Victor Ujagbe", coords: [25.242030691378844, 51.405105473946364] },
+            { name: "John Oka", coords: [25.242030691378844, 51.405105473946364] },
+            { name: "Edmond Duut", coords: [25.242030691378844, 51.405105473946364] },
+            { name: "Lucy Duut", coords: [25.242030691378844, 51.405105473946364] },
             { name: "Marga Mendoza", coords: [25.300063, 51.499562] }
         ];
 
@@ -90,22 +101,23 @@
         // Create markers for grouped locations
         Object.values(groupedLocations).forEach(group => {
             const popupContent = `${group.names.join("<br>")}`;
-            const isLargeGroup = group.names.length === 3; // Check if 3 people
-            const containsMargaMendoza = group.names.includes("Marga Mendoza");
+            // const isKitan =  group.names.includes("John Kitan");
+            // const isJoanna =  group.names.includes("Joanna Francisco");
+            // const isMargaMendoza = group.names.includes("Marga Mendoza");
 
-            // Create the marker
+            // // Create the marker
             const marker = L.marker(group.coords).addTo(map);
             
-            // Set default offset
+            // // Set default offset
             let offset = L.point(0, 0);
 
-            // Adjust the offset based on the conditions
-            if (isLargeGroup) {
-                offset = offset.add(L.point(35, 25)); // Shift right and down for large groups
-            }
-            if (containsMargaMendoza) {
-                offset = offset.add(L.point(0, -25)); // Shift up for groups containing Marga Mendoza
-            }
+            // // Adjust the offset based on the conditions
+            // if (isKitan || isJoanna) {
+            //     offset = offset.add(L.point(35, 25)); // Shift right and down for large groups
+            // }
+            // if (isMargaMendoza) {
+            //     offset = offset.add(L.point(0, -25)); // Shift up for groups containing Marga Mendoza
+            // }
 
             // Bind popup with calculated offset
             marker.bindPopup(popupContent, {
