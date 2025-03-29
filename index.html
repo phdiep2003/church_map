@@ -35,23 +35,66 @@
     <div id="map"></div>
 
     <script>
-        // Initialize the map
-        const map = L.map('map').setView([25.2854, 51.5310], 10); // Centered in Doha, Qatar
+        const map = L.map('map').setView([25.2854, 51.5310], 10);
 
-        // Use CartoDB tile layer (English)
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            attribution: '&copy; OpenStreetMap & CARTO',
             maxZoom: 20
         }).addTo(map);
 
-        // List of people and their coordinates
+        // Define municipalities with actual coordinates
+        const municipalities = [
+            { name: "Doha", coords: [25.2854, 51.5310], color: "blue" },
+            { name: "Al Rayyan", coords: [25.3244, 51.4128], color: "red" },
+            { name: "Umm Salal", coords: [25.7076, 51.3885], color: "green" },
+            { name: "Al Daayen", coords: [25.7205, 51.5308], color: "purple" },
+            { name: "Al Wakrah", coords: [25.1650, 51.5970], color: "orange" },
+            { name: "Al Khor", coords: [25.6800, 51.5050], color: "yellow" },
+            { name: "Al Shamal", coords: [26.1135, 51.2152], color: "pink" },
+            { name: "Al Sheehaniya", coords: [25.3708, 51.1839], color: "brown" }
+        ];
+
+        function getMunicipality(lat, lng) {
+        // Custom override for Siddique family
+        if (lat === 25.717438 && lng === 51.526562) {
+            return "yellow"; // Force Al Khor color
+        } else if (lat === 25.460687 && lng === 51.329687){
+            return "green";
+        }
+
+        let minDistance = Infinity;
+        let closestMunicipality = "gray";
+
+        municipalities.forEach(municipality => {
+            const [mLat, mLng] = municipality.coords;
+            const distance = Math.sqrt((lat - mLat) ** 2 + (lng - mLng) ** 2);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestMunicipality = municipality.color;
+            }
+        });
+
+        return closestMunicipality;
+        }
+
+        function getCustomIcon(color) {
+            return L.icon({
+                iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+                shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+                iconSize: [25, 41], 
+                iconAnchor: [12, 41], 
+                popupAnchor: [1, -34], 
+                shadowSize: [41, 41]
+            });
+        }
+
         const locations = [
             { name: "Zaghum Siddique", coords: [25.717438, 51.526562] },
             { name: "Samina Siddique", coords: [25.717438, 51.526562] },
             { name: "Albert Dacula", coords: [25.679437, 51.492687] },
             { name: "Ann Muego", coords: [25.240031792875516, 51.541719362177844] },
-            { name: "Joanna Francisco", coords: [25.299120775929527, 51.50542701054278] },
-            { name: "Mish Jane Borja", coords: [25.299120775929527, 51.50542701054278] },
+            { name: "Joanna Francisco", coords: [25.2679197, 51.4742731] },
+            { name: "Mish Jane Borja", coords: [25.2679197, 51.4742731] },
             { name: "Alan Gonzaga", coords: [25.460687, 51.329687] },
             { name: "Lowelyn Gonzaga", coords: [25.460687, 51.329687] },
             { name: "Welnor Zamora", coords: [25.460687, 51.329687] },
@@ -84,58 +127,32 @@
             { name: "Marga Mendoza", coords: [25.300063, 51.499562] }
         ];
 
-        // Group people by coordinates
         const groupedLocations = {};
-
         locations.forEach(person => {
-            const key = person.coords.join(","); // Create a unique key for the coordinate
+            const key = person.coords.join(",");
             if (!groupedLocations[key]) {
                 groupedLocations[key] = { coords: person.coords, names: [] };
             }
             groupedLocations[key].names.push(person.name);
         });
 
-        // Array to store markers
         const markers = [];
-
-        // Create markers for grouped locations
         Object.values(groupedLocations).forEach(group => {
-            const popupContent = `${group.names.join("<br>")}`;
-            // const isKitan =  group.names.includes("John Kitan");
-            // const isJoanna =  group.names.includes("Joanna Francisco");
-            // const isMargaMendoza = group.names.includes("Marga Mendoza");
+            const popupContent = group.names.join("<br>");
+            const color = getMunicipality(group.coords[0], group.coords[1]);
 
-            // // Create the marker
-            const marker = L.marker(group.coords).addTo(map);
-            
-            // // Set default offset
-            let offset = L.point(0, 0);
+            const marker = L.marker(group.coords, {
+                icon: getCustomIcon(color)
+            }).addTo(map);
 
-            // // Adjust the offset based on the conditions
-            // if (isKitan || isJoanna) {
-            //     offset = offset.add(L.point(35, 25)); // Shift right and down for large groups
-            // }
-            // if (isMargaMendoza) {
-            //     offset = offset.add(L.point(0, -25)); // Shift up for groups containing Marga Mendoza
-            // }
-
-            // Bind popup with calculated offset
-            marker.bindPopup(popupContent, {
-                autoClose: false,
-                offset: offset
-            });
-
+            marker.bindPopup(popupContent, { autoClose: false });
             markers.push(marker);
         });
 
-        // Function to open all popups
         function openAllPopups() {
-            markers.forEach(marker => {
-                marker.openPopup();
-            });
+            markers.forEach(marker => marker.openPopup());
         }
 
-        // Add event listener to the button
         document.getElementById("showPopupsButton").addEventListener("click", openAllPopups);
     </script>
 </body>
