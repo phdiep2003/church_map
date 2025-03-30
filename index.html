@@ -149,7 +149,7 @@
             const color = getMunicipality(group.coords[0], group.coords[1]);
             const isChurch = group.names.includes("Church");
             const marker = L.marker(group.coords, {
-                icon: getCustomIcon(color)
+        icon: getCustomIcon(isChurch ? "home" : color,
             }).addTo(map);
 
             marker.bindPopup(popupContent, { autoClose: false });
