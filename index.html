@@ -45,11 +45,11 @@
         const municipalities = [
             { name: "Doha", coords: [25.2854, 51.5310], color: "red" },
             { name: "Al Rayyan", coords: [25.3244, 51.4128], color: "blue" }, // Changed from turquoise
-            { name: "Umm Salal", coords: [25.7076, 51.3885], color: "violet" }, // Changed from pink
+            { name: "Umm Salal", coords: [25.7076, 51.3885], color: "pink" },
             { name: "Al Daayen", coords: [25.7205, 51.5308], color: "purple" },
-            { name: "Al Wakrah", coords: [25.1650, 51.5970], color: "darkblue" }, // Changed from glaucous
+            { name: "Al Wakrah", coords: [25.1650, 51.5970], color: "cyan" }, // Changed from glaucous
             { name: "Al Khor", coords: [25.6800, 51.5050], color: "orange" },
-            { name: "Al Shamal", coords: [26.1135, 51.2152], color: "cyan" }, // Changed from ice blue
+            { name: "Al Shamal", coords: [26.1135, 51.2152], color: "gray" }, // Changed from ice blue
             { name: "Al Sheehaniya", coords: [25.3708, 51.1839], color: "green" }
         ];
 
@@ -57,13 +57,13 @@
         function getMunicipality(lat, lng) {
         // Custom override for Siddique family
         if (lat === 25.717438 && lng === 51.526562) {
-            return "yellow"; // Force Al Khor color
+            return "orange"; // Force Al Khor color
         } else if (lat === 25.460687 && lng === 51.329687){
-            return "green";
+            return "pink"; // Force Umm Salal color
         } else if (lat === 25.2679197 && lng === 51.4742731){
-            return "red";
+            return "blue"; // Force Al Rayyan color
         } else if (lat === 25.198062 && lng === 51.505562 ){
-            return "red";
+            return "blue"; // Force Al Rayyan color
         }
 
         let minDistance = Infinity;
@@ -81,13 +81,13 @@
         return closestMunicipality;
         }
 
-        function getCustomIcon(color, isChurch = false) {
-        return L.icon({
+        function getCustomIcon(color) {
+            return L.icon({
                 iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
                 shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
                 iconSize: [25, 41], 
                 iconAnchor: [12, 41], 
-                popupAnchor: [-1, 34], 
+                popupAnchor: [1, -34], 
                 shadowSize: [41, 41]
             });
         }
