@@ -60,6 +60,10 @@
             return "yellow"; // Force Al Khor color
         } else if (lat === 25.460687 && lng === 51.329687){
             return "green";
+        } else if (lat === 25.2679197 && lng === 51.4742731){
+            return "red";
+        } else if (lat === 25.198062 && lng === 51.505562 ){
+            return "red";
         }
 
         let minDistance = Infinity;
@@ -77,16 +81,18 @@
         return closestMunicipality;
         }
 
-        function getCustomIcon(color) {
-            return L.icon({
-                iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-                shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-                iconSize: [25, 41], 
-                iconAnchor: [12, 41], 
-                popupAnchor: [1, -34], 
-                shadowSize: [41, 41]
-            });
-        }
+        function getCustomIcon(color, isChurch = false) {
+    return L.icon({
+        iconUrl: isChurch
+            ? "https://cdn-icons-png.flaticon.com/512/25/25694.png" // Home icon
+            : `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+        iconSize: [30, 30], 
+        iconAnchor: [15, 30], 
+        popupAnchor: [0, -30], 
+        shadowSize: [41, 41]
+    });
+}
 
         const locations = [
             { name: "Zaghum Siddique", coords: [25.717438, 51.526562] },
@@ -124,7 +130,8 @@
             { name: "John Oka", coords: [25.242030691378844, 51.405105473946364] },
             { name: "Edmond Duut", coords: [25.242030691378844, 51.405105473946364] },
             { name: "Lucy Duut", coords: [25.242030691378844, 51.405105473946364] },
-            { name: "Marga Mendoza", coords: [25.300063, 51.499562] }
+            { name: "Marga Mendoza", coords: [25.300063, 51.499562] },
+            { name: "Church", coords: [25.2127726, 51.5240586], isChurch: true }
         ];
 
         const groupedLocations = {};
@@ -140,7 +147,7 @@
         Object.values(groupedLocations).forEach(group => {
             const popupContent = group.names.join("<br>");
             const color = getMunicipality(group.coords[0], group.coords[1]);
-
+            const isChurch = group.names.includes("Church");
             const marker = L.marker(group.coords, {
                 icon: getCustomIcon(color)
             }).addTo(map);
