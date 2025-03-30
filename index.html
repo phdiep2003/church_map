@@ -42,17 +42,17 @@
             maxZoom: 20
         }).addTo(map);
 
-        // Define municipalities with actual coordinates
         const municipalities = [
-            { name: "Doha", coords: [25.2854, 51.5310], color: "blue" },
-            { name: "Al Rayyan", coords: [25.3244, 51.4128], color: "red" },
-            { name: "Umm Salal", coords: [25.7076, 51.3885], color: "green" },
+            { name: "Doha", coords: [25.2854, 51.5310], color: "red" },
+            { name: "Al Rayyan", coords: [25.3244, 51.4128], color: "blue" }, // Changed from turquoise
+            { name: "Umm Salal", coords: [25.7076, 51.3885], color: "violet" }, // Changed from pink
             { name: "Al Daayen", coords: [25.7205, 51.5308], color: "purple" },
-            { name: "Al Wakrah", coords: [25.1650, 51.5970], color: "orange" },
-            { name: "Al Khor", coords: [25.6800, 51.5050], color: "yellow" },
-            { name: "Al Shamal", coords: [26.1135, 51.2152], color: "pink" },
-            { name: "Al Sheehaniya", coords: [25.3708, 51.1839], color: "brown" }
+            { name: "Al Wakrah", coords: [25.1650, 51.5970], color: "darkblue" }, // Changed from glaucous
+            { name: "Al Khor", coords: [25.6800, 51.5050], color: "orange" },
+            { name: "Al Shamal", coords: [26.1135, 51.2152], color: "cyan" }, // Changed from ice blue
+            { name: "Al Sheehaniya", coords: [25.3708, 51.1839], color: "green" }
         ];
+
 
         function getMunicipality(lat, lng) {
         // Custom override for Siddique family
@@ -83,15 +83,13 @@
 
         function getCustomIcon(color, isChurch = false) {
         return L.icon({
-        iconUrl: isChurch
-            ? "https://cdn-icons-png.flaticon.com/512/25/25694.png" // Home icon for church
-            : `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-        shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-        iconSize: [25, 41], 
-        iconAnchor: [12, 41], 
-        popupAnchor: [-1, 34], 
-        shadowSize: [41, 41]
-        });
+                iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+                shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+                iconSize: [25, 41], 
+                iconAnchor: [12, 41], 
+                popupAnchor: [-1, 34], 
+                shadowSize: [41, 41]
+            });
         }
 
         const locations = [
@@ -130,8 +128,7 @@
             { name: "John Oka", coords: [25.242030691378844, 51.405105473946364] },
             { name: "Edmond Duut", coords: [25.242030691378844, 51.405105473946364] },
             { name: "Lucy Duut", coords: [25.242030691378844, 51.405105473946364] },
-            { name: "Marga Mendoza", coords: [25.300063, 51.499562] },
-            { name: "Church", coords: [25.2127726, 51.5240586], isChurch: true }
+            { name: "Marga Mendoza", coords: [25.300063, 51.499562] }
         ];
 
         const groupedLocations = {};
@@ -147,11 +144,10 @@
         Object.values(groupedLocations).forEach(group => {
             const popupContent = group.names.join("<br>");
             const color = getMunicipality(group.coords[0], group.coords[1]);
-            const isChurch = group.names.includes("Church");
-            const marker = L.marker(group.coords, {
-                icon: getCustomIcon(color, isChurch) // Use color normally, and pass isChurch separately
-            }).addTo(map);
 
+            const marker = L.marker(group.coords, {
+                icon: getCustomIcon(color)
+            }).addTo(map);
 
             marker.bindPopup(popupContent, { autoClose: false });
             markers.push(marker);
